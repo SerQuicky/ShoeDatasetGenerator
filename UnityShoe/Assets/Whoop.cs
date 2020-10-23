@@ -26,7 +26,7 @@ public class Whoop : MonoBehaviour
         screenHeight = Screen.height;
         Debug.Log("Screen-Height is: " + Screen.height + " Screen-Width is:" + Screen.width);
 
-        Sprite temp = Resources.Load<Sprite>("Sprites/background1");
+        Sprite temp = Resources.Load<Sprite>("Sprites/background" + backgroundIndex);
         Debug.Log(temp);
         backgroundImage.sprite = temp;
     }

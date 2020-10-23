@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.UI;
+
 
 public class Whoop : MonoBehaviour
 {
@@ -9,33 +11,32 @@ public class Whoop : MonoBehaviour
     private float gerb;
     public Transform target;
 
-    public GameObject Object;
+    public int backgroundIndex = 1;
+    public Image backgroundImage;
     public Camera cam;
 
     public float screenWidth;
     public float screenHeight;
 
-    void CreateText()
-    {
-        string path = Application.dataPath + "/Log.txt";
-        File.WriteAllText(path, "test");
-    }
 
     // Start is called before the first frame update
     void Start()
     {
-        CreateText();
         screenWidth = Screen.width;
         screenHeight = Screen.height;
         Debug.Log("Screen-Height is: " + Screen.height + " Screen-Width is:" + Screen.width);
+
+        Sprite temp = Resources.Load<Sprite>("Sprites/background1");
+        Debug.Log(temp);
+        backgroundImage.sprite = temp;
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector3 screenPos = cam.WorldToScreenPoint(target.position);
-        Debug.Log("target is " + screenPos.x + " pixels from the left");
-        Debug.Log("target is " + screenPos.y + " pixels from the top");
+        //Debug.Log("target is " + screenPos.x + " pixels from the left");
+        //Debug.Log("target is " + screenPos.y + " pixels from the top");
 
         Bounds bounds = GetShoeBounds();
         //Debug.DrawLine(new Vector3(bounds.min.x, bounds.min.y, 0f), new Vector3(bounds.max.x, bounds.max.y, 0), Color.red);
@@ -47,8 +48,8 @@ public class Whoop : MonoBehaviour
         float height = max.y - min.y > 0 ? max.y - min.y : (max.y - min.y) * -1;
 
 
-        Debug.Log("min: " + min.x + " and " + max.x + " width " + width);
-        Debug.Log("max: " + min.y + " and " + max.y + " height " + height);
+        //Debug.Log("min: " + min.x + " and " + max.x + " width " + width);
+        //Debug.Log("max: " + min.y + " and " + max.y + " height " + height);
 
         if (gerb < 10)
         {

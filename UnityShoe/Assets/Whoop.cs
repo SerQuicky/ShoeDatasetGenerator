@@ -15,8 +15,8 @@ public class Whoop : MonoBehaviour
     public Image backgroundImage;
     public Camera cam;
 
-    public float screenWidth;
-    public float screenHeight;
+    private float screenWidth;
+    private float screenHeight;
 
 
     // Start is called before the first frame update
@@ -34,7 +34,7 @@ public class Whoop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 screenPos = cam.WorldToScreenPoint(target.position);
+        Vector3 screenPos = cam.WorldToScreenPoint(transform.position);
         //Debug.Log("target is " + screenPos.x + " pixels from the left");
         //Debug.Log("target is " + screenPos.y + " pixels from the top");
 
@@ -60,6 +60,7 @@ public class Whoop : MonoBehaviour
 
     void CreateTrainData(float index, float centerX, float centerY, float width, float height)
     {
+        Debug.Log("0 " + (centerX / screenWidth) + " " + (centerY / screenHeight) + " " + (width / screenWidth) + " " + (height / screenHeight));
         //ScreenCapture.CaptureScreenshot("image_" + index + ".png");
         //string path = Application.dataPath + "/image_" + index + ".txt";
         //File.WriteAllText(path, "0 " + (centerX / screenWidth) + " " + (centerY / screenHeight) + " " + (width / screenWidth) + " " + (height / screenHeight));

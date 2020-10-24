@@ -60,9 +60,9 @@ public class Whoop : MonoBehaviour
 
     void CreateTrainData(float index, float centerX, float centerY, float width, float height)
     {
-        ScreenCapture.CaptureScreenshot("image_" + index + ".png");
-        string path = Application.dataPath + "/image_" + index + ".txt";
-        File.WriteAllText(path, "0 " + (centerX / screenWidth) + " " + (centerY / screenHeight) + " " + (width / screenWidth) + " " + (height / screenHeight));
+        //ScreenCapture.CaptureScreenshot("image_" + index + ".png");
+        //string path = Application.dataPath + "/image_" + index + ".txt";
+        //File.WriteAllText(path, "0 " + (centerX / screenWidth) + " " + (centerY / screenHeight) + " " + (width / screenWidth) + " " + (height / screenHeight));
     }
 
     Bounds GetShoeBounds()

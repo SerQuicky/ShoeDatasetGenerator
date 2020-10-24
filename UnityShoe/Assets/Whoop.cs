@@ -23,6 +23,8 @@ public class Whoop : MonoBehaviour
     private float screenWidth;
     private float screenHeight;
 
+    public Transform test;
+
     private List<GameObject> shoes = new List<GameObject>();
 
     // Start is called before the first frame update
@@ -41,53 +43,69 @@ public class Whoop : MonoBehaviour
 
         for (int x = 0; x < shoeMatrix; x++)
         {
-            for (int y = 0; y < shoeMatrix; y++)
-            {
-                float xc = topLeftCoord.x + (Mathf.Abs(bottomRightCoord.x - topLeftCoord.x) / 5) * x;
-                float yc = topLeftCoord.y - (Mathf.Abs(bottomRightCoord.y - topLeftCoord.y) / 5) * y;
-                Quaternion randomQuat = Quaternion.identity; //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
+            float xc = topLeftCoord.x + (Mathf.Abs(bottomRightCoord.x - topLeftCoord.x) / 5) * x;
+            float yc = topLeftCoord.y - Mathf.Abs(bottomRightCoord.y - topLeftCoord.y);
+            Quaternion randomQuat = Quaternion.identity; //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
 
-                GameObject gameobject = Instantiate<GameObject>(source, new Vector3(xc, yc, topLeftCoord.z), randomQuat);
-                shoes.Add(gameobject);
-            }
+            GameObject gameobject = Instantiate<GameObject>(source, new Vector3(xc, yc, topLeftCoord.z), randomQuat);
+            shoes.Add(gameobject);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+        Normal();
+    }
+
+    void Normal()
+    {
         List<BoundingBox> boundingBoxes = new List<BoundingBox>();
 
-        if(gerb < 10000)
+        if (gerb < 2000)
         {
             shoes.ForEach(shoe =>
             {
-                Vector3 centerShoe = cam.WorldToScreenPoint(shoe.transform.position);
+                Vector3 centerShoe = cam.WorldToScreenPoint(new Vector3(shoe.transform.position.x, shoe.transform.position.y, 0f));
                 CapsuleCollider collider = shoe.transform.GetComponent<CapsuleCollider>();
-                Vector3 centerCollider = cam.WorldToScreenPoint(collider.transform.position);
-                Vector3 tl = new Vector3(shoe.transform.position.x - (collider.height * shoe.transform.localScale.y / 2), shoe.transform.position.y + (collider.radius * shoe.transform.localScale.x), 0f);
-                Vector3 br = new Vector3(shoe.transform.position.x + (collider.height * shoe.transform.localScale.y / 2), shoe.transform.position.y - (collider.radius * shoe.transform.localScale.y), 0f);
-                float width = Mathf.Abs(tl.x - br.x);
-                float height = Mathf.Abs(tl.y - br.y);
-                Debug.DrawLine(tl, br, Color.red);
+                Vector3 tl = new Vector3(shoe.transform.position.x - (collider.height * shoe.transform.localScale.y / 2) + collider.center.x, shoe.transform.position.y + (collider.radius * shoe.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * shoe.transform.localScale.y), 0f);
+                Vector3 br = new Vector3(shoe.transform.position.x + (collider.height * shoe.transform.localScale.y / 2) + collider.center.x + 5f, shoe.transform.position.y - (collider.radius * shoe.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * shoe.transform.localScale.y) - 5f, 0f);
+
+                //Vector3 tl = calcKeyPoint(shoe, (-1) * ((collider.height * shoe.transform.localScale.y / 2) + collider.center.x), (collider.radius * shoe.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * shoe.transform.localScale.y));
+                //Vector3 br = calcKeyPoint(shoe, (collider.height * shoe.transform.localScale.y / 2) + collider.center.x + 5f, (-1) * ((collider.radius * shoe.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * shoe.transform.localScale.y) - 5f));
+
+
+                Vector3 tl_cord = cam.WorldToScreenPoint(tl);
+                Vector3 br_cord = cam.WorldToScreenPoint(br);
+
+                float width = Mathf.Abs(tl_cord.x - br_cord.x);
+                float height = Mathf.Abs(tl_cord.y - br_cord.y);
+
+                Debug.Log(gerb + " ------------------- ");
                 Debug.Log(centerShoe);
+                Debug.Log(tl_cord);
+                Debug.Log(br_cord);
+
                 boundingBoxes.Add(new BoundingBox(0, new Vector3(centerShoe.x, screenHeight - centerShoe.y, 0f), width, height));
+
                 Debug.DrawLine(tl, br, Color.red);
             });
 
             //CreateTrainData(boundingBoxes);
         }
         gerb++;
+    }
 
+    Vector3 calcKeyPoint(GameObject shoe, float xO, float yO)
+    {
+        return new Vector3(shoe.transform.position.x - xO, shoe.transform.position.y + yO, 0f);
+    }
 
-        /*Vector3 screenPos = cam.WorldToScreenPoint(transform.position);
-
-        Bounds bounds = GetShoeBounds(transform);
-        Vector3 min = cam.WorldToScreenPoint(bounds.min);
-        Vector3 max = cam.WorldToScreenPoint(bounds.max);
-        float width = Mathf.Abs(max.x - min.x);
-        float height = Mathf.Abs(max.y - min.y);
-        Debug.DrawLine(new Vector3(bounds.min.x, bounds.min.y, 0f), new Vector3(bounds.max.x, bounds.max.y, 0), Color.red);*/
+    void Test()
+    {
+        Vector3 centerShoe = cam.WorldToScreenPoint(test.position);
+        Debug.Log(centerShoe);
+        ScreenCapture.CaptureScreenshot("image_test.png");
     }
 
     void CreateTrainData(List<BoundingBox> boundingBoxes)
@@ -105,7 +123,6 @@ public class Whoop : MonoBehaviour
             ScreenCapture.CaptureScreenshot("image_" + gerb + ".png");
         }
     }
-
 
     public class BoundingBox
     {

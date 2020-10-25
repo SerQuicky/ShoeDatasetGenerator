@@ -35,7 +35,7 @@ public class Whoop : MonoBehaviour
         screenWidth = Screen.width;
         screenHeight = Screen.height;
         backgroundImage.sprite = Resources.Load<Sprite>("Sprites/background" + backgroundIndex);
-        GameObject source = Resources.Load<GameObject>("Shoes/soccer");
+        GameObject source = Resources.Load<GameObject>("Shoes/business");
 
         if (shoeMatrix > 5)
         {
@@ -49,10 +49,10 @@ public class Whoop : MonoBehaviour
             float xc = topLeftCoord.x + (Mathf.Abs(bottomRightCoord.x - topLeftCoord.x) / 5) * Random.Range(0, 4);
             float yc = topLeftCoord.y - (Mathf.Abs(bottomRightCoord.y - topLeftCoord.y) / 5) * Random.Range(0, 4);
             float zc = topLeftCoord.z - (Mathf.Abs(bottomRightCoord.z - topLeftCoord.z) / 5) * Random.Range(0, 4);
-            Quaternion randomQuat = Quaternion.identity; //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
+            Quaternion randomQuat = ResolveShoeQuaternion("business"); //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
 
             GameObject gameobject = Instantiate<GameObject>(source, new Vector3(xc, yc, zc), randomQuat);
-            shoes.Add(new Shoe("soccer", gameobject));
+            shoes.Add(new Shoe("business", gameobject));
         }
     }
 
@@ -96,7 +96,7 @@ public class Whoop : MonoBehaviour
                 }
             });
 
-            //CreateTrainData(boundingBoxes);
+            CreateTrainData(boundingBoxes);
         }
         gerb++;
 
@@ -104,8 +104,8 @@ public class Whoop : MonoBehaviour
         {
             CapsuleCollider collider = test.transform.GetComponent<CapsuleCollider>();
             // top left and bottom right corner points
-            Vector3 tl = new Vector3(test.transform.position.x - (collider.height * test.transform.localScale.y / 2) + collider.center.x, test.transform.position.y + (collider.radius * 2 / 4 * test.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * test.transform.localScale.y), test.transform.position.z) + ResolveShoePivot("superstar_tl");
-            Vector3 br = new Vector3(test.transform.position.x + (collider.height * test.transform.localScale.y / 2) + collider.center.x, test.transform.position.y - (collider.radius * 2 / 4 * test.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * test.transform.localScale.y), test.transform.position.z) + ResolveShoePivot("superstar_br");
+            Vector3 tl = new Vector3(test.transform.position.x - (collider.height * test.transform.localScale.y / 2) + collider.center.x, test.transform.position.y + (collider.radius * test.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * test.transform.localScale.y), test.transform.position.z) + ResolveShoePivot("business_tl");
+            Vector3 br = new Vector3(test.transform.position.x + (collider.height * test.transform.localScale.y / 2) + collider.center.x, test.transform.position.y - (collider.radius * test.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * test.transform.localScale.y), test.transform.position.z) + ResolveShoePivot("business_br");
 
             Debug.Log(collider.transform.position);
             Debug.Log(tl);
@@ -159,12 +159,39 @@ public class Whoop : MonoBehaviour
                 return new Vector3(80f, 15f, 0);
             case "superstar_br":
                 return new Vector3(80f, 15f, 0);
+            case "converse_tl":
+                return new Vector3(0, 15f, 0);
+            case "converse_br":
+                return new Vector3(0, 15f, 0);
+            case "business_tl":
+                return new Vector3(-5f, 20f, 0);
+            case "business_br":
+                return new Vector3(-10f, 7.5f, 0);
             default:
                 return new Vector3(0, 0, 0);
         }
     }
 
-    float ResolveRotationPivot(string shoe)
+    Quaternion ResolveShoeQuaternion(string shoe)
+    {
+        switch (shoe)
+        {
+            case "vans":
+                return Quaternion.identity;
+            case "soccer":
+                return Quaternion.identity;
+            case "superstar":
+                return Quaternion.Euler(0f, 90f, 0f);
+            case "converse":
+                return Quaternion.Euler(0f, 90f, 0f);
+            case "business":
+                return Quaternion.Euler(270f, 90f, 0f);
+            default:
+                return Quaternion.identity;
+        }
+    }
+
+    float ResolveYRotationPivot(string shoe)
     {
         switch (shoe)
         {
@@ -173,7 +200,7 @@ public class Whoop : MonoBehaviour
             case "soccer":
                 return 1;
             case "superstar":
-                return 2 / 4;
+                return 100 / 100;
             default:
                 return 1;
         }

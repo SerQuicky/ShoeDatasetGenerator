@@ -34,7 +34,6 @@ public class Whoop : MonoBehaviour
     {
         screenWidth = Screen.width;
         screenHeight = Screen.height;
-        Debug.Log("Screen-Height is: " + Screen.height + " Screen-Width is:" + Screen.width);
         backgroundImage.sprite = Resources.Load<Sprite>("Sprites/background" + backgroundIndex);
         GameObject source = Resources.Load<GameObject>("Shoes/vans");
 
@@ -45,11 +44,14 @@ public class Whoop : MonoBehaviour
 
         for (int x = 0; x < shoeMatrix; x++)
         {
-            float xc = topLeftCoord.x + (Mathf.Abs(bottomRightCoord.x - topLeftCoord.x) / 5) * x;
-            float yc = topLeftCoord.y - Mathf.Abs(bottomRightCoord.y - topLeftCoord.y);
+
+            //double rDouble = r.NextDouble() * range; //for doubles
+            float xc = topLeftCoord.x + (Mathf.Abs(bottomRightCoord.x - topLeftCoord.x) / 5) * Random.Range(0, 4);
+            float yc = topLeftCoord.y - (Mathf.Abs(bottomRightCoord.y - topLeftCoord.y) / 5) * Random.Range(0, 4);
+            float zc = topLeftCoord.z - (Mathf.Abs(bottomRightCoord.z - topLeftCoord.z) / 5) * Random.Range(0, 4);
             Quaternion randomQuat = Quaternion.identity; //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
 
-            GameObject gameobject = Instantiate<GameObject>(source, new Vector3(xc, yc, topLeftCoord.z), randomQuat);
+            GameObject gameobject = Instantiate<GameObject>(source, new Vector3(xc, yc, zc), randomQuat);
             shoes.Add(gameobject);
         }
     }
@@ -64,7 +66,7 @@ public class Whoop : MonoBehaviour
     {
         List<BoundingBox> boundingBoxes = new List<BoundingBox>();
 
-        if (gerb < 5)
+        if (gerb < 1500)
         {
             shoes.ForEach(shoe =>
             {
@@ -72,8 +74,8 @@ public class Whoop : MonoBehaviour
                 CapsuleCollider collider = shoe.transform.GetComponent<CapsuleCollider>();
 
                 // top left and bottom right corner points
-                Vector3 tl = new Vector3(shoe.transform.position.x - (collider.height * shoe.transform.localScale.y / 2) + collider.center.x, shoe.transform.position.y + (collider.radius * shoe.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * shoe.transform.localScale.y), 0f);
-                Vector3 br = new Vector3(shoe.transform.position.x + (collider.height * shoe.transform.localScale.y / 2) + collider.center.x + 5f, shoe.transform.position.y - (collider.radius * shoe.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * shoe.transform.localScale.y) - 5f, 0f);
+                Vector3 tl = new Vector3(shoe.transform.position.x - (collider.height * shoe.transform.localScale.y / 2) + collider.center.x, shoe.transform.position.y + (collider.radius * shoe.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * shoe.transform.localScale.y), shoe.transform.position.z);
+                Vector3 br = new Vector3(shoe.transform.position.x + (collider.height * shoe.transform.localScale.y / 2) + collider.center.x + 5f, shoe.transform.position.y - (collider.radius * shoe.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * shoe.transform.localScale.y) - 5f, shoe.transform.position.z);
 
                 // 3d coords to 2d pixels
                 Vector3 centerShoe = cam.WorldToScreenPoint(new Vector3(shoe.transform.position.x, shoe.transform.position.y, 0f));
@@ -93,7 +95,7 @@ public class Whoop : MonoBehaviour
                 }
             });
 
-            CreateTrainData(boundingBoxes);
+            //CreateTrainData(boundingBoxes);
         }
         gerb++;
     }

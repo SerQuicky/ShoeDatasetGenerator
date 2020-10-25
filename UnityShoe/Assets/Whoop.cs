@@ -27,7 +27,7 @@ public class Whoop : MonoBehaviour
 
     public bool debug = true;
 
-    private List<GameObject> shoes = new List<GameObject>();
+    private List<Shoe> shoes = new List<Shoe>();
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +35,7 @@ public class Whoop : MonoBehaviour
         screenWidth = Screen.width;
         screenHeight = Screen.height;
         backgroundImage.sprite = Resources.Load<Sprite>("Sprites/background" + backgroundIndex);
-        GameObject source = Resources.Load<GameObject>("Shoes/vans");
+        GameObject source = Resources.Load<GameObject>("Shoes/soccer");
 
         if (shoeMatrix > 5)
         {
@@ -52,7 +52,7 @@ public class Whoop : MonoBehaviour
             Quaternion randomQuat = Quaternion.identity; //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
 
             GameObject gameobject = Instantiate<GameObject>(source, new Vector3(xc, yc, zc), randomQuat);
-            shoes.Add(gameobject);
+            shoes.Add(new Shoe("soccer", gameobject));
         }
     }
 
@@ -66,19 +66,20 @@ public class Whoop : MonoBehaviour
     {
         List<BoundingBox> boundingBoxes = new List<BoundingBox>();
 
-        if (gerb < 1500)
+        if (gerb < 30)
         {
             shoes.ForEach(shoe =>
             {
                 // collider of the shoe
-                CapsuleCollider collider = shoe.transform.GetComponent<CapsuleCollider>();
+                CapsuleCollider collider = shoe.gameObject.transform.GetComponent<CapsuleCollider>();
 
                 // top left and bottom right corner points
-                Vector3 tl = new Vector3(shoe.transform.position.x - (collider.height * shoe.transform.localScale.y / 2) + collider.center.x, shoe.transform.position.y + (collider.radius * shoe.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * shoe.transform.localScale.y), shoe.transform.position.z);
-                Vector3 br = new Vector3(shoe.transform.position.x + (collider.height * shoe.transform.localScale.y / 2) + collider.center.x + 5f, shoe.transform.position.y - (collider.radius * shoe.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * shoe.transform.localScale.y) - 5f, shoe.transform.position.z);
+                Vector3 tl = new Vector3(shoe.gameObject.transform.position.x - (collider.height * shoe.gameObject.transform.localScale.y / 2) + collider.center.x, shoe.gameObject.transform.position.y + (collider.radius * shoe.gameObject.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * shoe.gameObject.transform.localScale.y), shoe.gameObject.transform.position.z) + ResolveShoePivot(shoe.type + "_tl");
+                Vector3 br = new Vector3(shoe.gameObject.transform.position.x + (collider.height * shoe.gameObject.transform.localScale.y / 2) + collider.center.x, shoe.gameObject.transform.position.y - (collider.radius * shoe.gameObject.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * shoe.gameObject.transform.localScale.y), shoe.gameObject.transform.position.z) + ResolveShoePivot(shoe.type + "_br");
 
                 // 3d coords to 2d pixels
-                Vector3 centerShoe = cam.WorldToScreenPoint(new Vector3(shoe.transform.position.x, shoe.transform.position.y, 0f));
+                Vector3 centerShoe = cam.WorldToScreenPoint((tl + br) / 2);
+                Debug.Log(centerShoe);
                 Vector3 tl_cord = cam.WorldToScreenPoint(tl);
                 Vector3 br_cord = cam.WorldToScreenPoint(br);
 
@@ -98,6 +99,21 @@ public class Whoop : MonoBehaviour
             //CreateTrainData(boundingBoxes);
         }
         gerb++;
+
+        if (debug)
+        {
+            CapsuleCollider collider = test.transform.GetComponent<CapsuleCollider>();
+            // top left and bottom right corner points
+            Vector3 tl = new Vector3(test.transform.position.x - (collider.height * test.transform.localScale.y / 2) + collider.center.x, test.transform.position.y + (collider.radius * 2 / 4 * test.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * test.transform.localScale.y), test.transform.position.z) + ResolveShoePivot("superstar_tl");
+            Vector3 br = new Vector3(test.transform.position.x + (collider.height * test.transform.localScale.y / 2) + collider.center.x, test.transform.position.y - (collider.radius * 2 / 4 * test.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * test.transform.localScale.y), test.transform.position.z) + ResolveShoePivot("superstar_br");
+
+            Debug.Log(collider.transform.position);
+            Debug.Log(tl);
+            Debug.Log(br);
+
+
+            Debug.DrawLine(tl, br, Color.red);
+        }
     }
 
 
@@ -124,6 +140,61 @@ public class Whoop : MonoBehaviour
             ScreenCapture.CaptureScreenshot("./Assets/training_data/image_" + gerb + ".png");
         }
     }
+
+
+    // resolve inaccurate 
+    Vector3 ResolveShoePivot(string shoe)
+    {
+        switch (shoe)
+        {
+            case "vans_tl":
+                return new Vector3(0, 0, 0);
+            case "vans_br":
+                return new Vector3(5f, -5, 0);
+            case "soccer_tl":
+                return new Vector3(0, 8f, 0);
+            case "soccer_br":
+                return new Vector3(0, 8f, 0);
+            case "superstar_tl":
+                return new Vector3(80f, 15f, 0);
+            case "superstar_br":
+                return new Vector3(80f, 15f, 0);
+            default:
+                return new Vector3(0, 0, 0);
+        }
+    }
+
+    float ResolveRotationPivot(string shoe)
+    {
+        switch (shoe)
+        {
+            case "vans":
+                return 1;
+            case "soccer":
+                return 1;
+            case "superstar":
+                return 2 / 4;
+            default:
+                return 1;
+        }
+    }
+
+
+
+
+    public class Shoe
+    {
+        public string type;
+        public GameObject gameObject;
+
+        public Shoe(string type, GameObject gameObject)
+        {
+            this.type = type;
+            this.gameObject = gameObject;
+        }
+    }
+
+
 
     public class BoundingBox
     {

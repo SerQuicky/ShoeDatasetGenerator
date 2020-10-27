@@ -324,7 +324,7 @@ MonoBehaviour:
   lightColor: {r: 0.9056604, g: 0.252047, b: 0.252047, a: 0}
   test: {fileID: 452109303}
   debug: 1
-  mix: 0
+  mix: 1
 --- !u!4 &524179864
 Transform:
   m_ObjectHideFlags: 0

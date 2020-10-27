@@ -9,7 +9,6 @@ public class Whoop : MonoBehaviour
 {
 
     private float gerb = 0;
-    //public Transform transform;
 
     public int backgroundIndex = 1;
     public Image backgroundImage;
@@ -39,25 +38,34 @@ public class Whoop : MonoBehaviour
         screenWidth = Screen.width;
         screenHeight = Screen.height;
         backgroundImage.sprite = Resources.Load<Sprite>("Sprites/background" + backgroundIndex);
-        GameObject source = Resources.Load<GameObject>("Shoes/business");
         light.color = lightColor;
+        Shoe[] sources = { new Shoe("vans", Resources.Load<GameObject>("Shoes/vans")), new Shoe("soccer", Resources.Load<GameObject>("Shoes/soccer")),
+                                    new Shoe("converse", Resources.Load<GameObject>("Shoes/converse")), new Shoe("superstar", Resources.Load<GameObject>("Shoes/superstar")),
+                                    new Shoe("business", Resources.Load<GameObject>("Shoes/business"))};
+
 
         if (shoeMatrix > 5)
         {
             shoeMatrix = 5;
         }
 
+
+
+
+        int baseIndex = Random.Range(0, 4);
+
         for (int x = 0; x < shoeMatrix; x++)
         {
 
+            int randomIndex = mix ? Random.Range(0, 4) : baseIndex;
             //double rDouble = r.NextDouble() * range; //for doubles
             float xc = topLeftCoord.x + (Mathf.Abs(bottomRightCoord.x - topLeftCoord.x) / 5) * Random.Range(0, 4);
             float yc = topLeftCoord.y - (Mathf.Abs(bottomRightCoord.y - topLeftCoord.y) / 5) * Random.Range(0, 4);
             float zc = topLeftCoord.z - (Mathf.Abs(bottomRightCoord.z - topLeftCoord.z) / 5) * Random.Range(0, 4);
-            Quaternion randomQuat = ResolveShoeQuaternion("business"); //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
+            Quaternion randomQuat = ResolveShoeQuaternion(sources[randomIndex].type); //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
 
-            GameObject gameobject = Instantiate<GameObject>(source, new Vector3(xc, yc, zc), randomQuat);
-            shoes.Add(new Shoe("business", gameobject));
+            GameObject gameobject = Instantiate<GameObject>(sources[randomIndex].gameObject, new Vector3(xc, yc, zc), randomQuat);
+            shoes.Add(new Shoe(sources[randomIndex].type, gameobject));
         }
     }
 
@@ -71,7 +79,7 @@ public class Whoop : MonoBehaviour
     {
         List<BoundingBox> boundingBoxes = new List<BoundingBox>();
 
-        if (gerb < 30)
+        if (gerb < 2500)
         {
             shoes.ForEach(shoe =>
             {
@@ -212,6 +220,24 @@ public class Whoop : MonoBehaviour
     }
 
 
+    string ResolveShoe(int index)
+    {
+        switch(index)
+        {
+            case 0:
+                return "vans";
+            case 1:
+                return "soccer";
+            case 2:
+                return "superstar";
+            case 3:
+                return "converse";
+            case 4:
+                return "business";
+            default:
+                return "vans";
+        }
+    }
 
 
     public class Shoe

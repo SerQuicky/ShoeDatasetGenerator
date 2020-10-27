@@ -23,9 +23,13 @@ public class Whoop : MonoBehaviour
     private float screenWidth;
     private float screenHeight;
 
+    public Light light;
+    public Color lightColor;
+
     public Transform test;
 
     public bool debug = true;
+    public bool mix = false;
 
     private List<Shoe> shoes = new List<Shoe>();
 
@@ -36,6 +40,7 @@ public class Whoop : MonoBehaviour
         screenHeight = Screen.height;
         backgroundImage.sprite = Resources.Load<Sprite>("Sprites/background" + backgroundIndex);
         GameObject source = Resources.Load<GameObject>("Shoes/business");
+        light.color = lightColor;
 
         if (shoeMatrix > 5)
         {
@@ -96,7 +101,7 @@ public class Whoop : MonoBehaviour
                 }
             });
 
-            CreateTrainData(boundingBoxes);
+            //CreateTrainData(boundingBoxes);
         }
         gerb++;
 

@@ -16,6 +16,8 @@ public class Whoop : MonoBehaviour
 
     public int shoeMatrix = 1;
 
+    public int run = 1;
+
     public Vector3 topLeftCoord;
     public Vector3 bottomRightCoord;
 
@@ -52,16 +54,16 @@ public class Whoop : MonoBehaviour
 
 
 
-        int baseIndex = Random.Range(0, 4);
+        int baseIndex = Random.Range(0, 5);
 
         for (int x = 0; x < shoeMatrix; x++)
         {
 
-            int randomIndex = mix ? Random.Range(0, 4) : baseIndex;
+            int randomIndex = mix ? Random.Range(0, 5) : baseIndex;
             //double rDouble = r.NextDouble() * range; //for doubles
-            float xc = topLeftCoord.x + (Mathf.Abs(bottomRightCoord.x - topLeftCoord.x) / 5) * Random.Range(0, 4);
-            float yc = topLeftCoord.y - (Mathf.Abs(bottomRightCoord.y - topLeftCoord.y) / 5) * Random.Range(0, 4);
-            float zc = topLeftCoord.z - (Mathf.Abs(bottomRightCoord.z - topLeftCoord.z) / 5) * Random.Range(0, 4);
+            float xc = topLeftCoord.x + (Mathf.Abs(bottomRightCoord.x - topLeftCoord.x) / 5) * Random.Range(0, 5);
+            float yc = topLeftCoord.y - (Mathf.Abs(bottomRightCoord.y - topLeftCoord.y) / 5) * Random.Range(0, 5);
+            float zc = topLeftCoord.z - (Mathf.Abs(bottomRightCoord.z - topLeftCoord.z) / 5) * Random.Range(0, 5);
             Quaternion randomQuat = ResolveShoeQuaternion(sources[randomIndex].type); //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
 
             GameObject gameobject = Instantiate<GameObject>(sources[randomIndex].gameObject, new Vector3(xc, yc, zc), randomQuat);
@@ -79,7 +81,7 @@ public class Whoop : MonoBehaviour
     {
         List<BoundingBox> boundingBoxes = new List<BoundingBox>();
 
-        if (gerb < 2500)
+        if (gerb < 50)
         {
             shoes.ForEach(shoe =>
             {
@@ -109,7 +111,7 @@ public class Whoop : MonoBehaviour
                 }
             });
 
-            //CreateTrainData(boundingBoxes);
+            CreateTrainData(boundingBoxes);
         }
         gerb++;
 
@@ -147,10 +149,10 @@ public class Whoop : MonoBehaviour
                 text += box.classifier + " " + (box.center.x / screenWidth) + " " + (box.center.y / screenHeight) + " " + (box.width / screenWidth) + " " + (box.height / screenHeight) + "\n";
             });
 
-            string path = Application.dataPath + "/training_data/image_" + gerb + ".txt";
+            string path = Application.dataPath + "/training_data/image_" + gerb + "-" + run + ".txt";
             Debug.Log(Application.dataPath);
             File.WriteAllText(path, text);
-            ScreenCapture.CaptureScreenshot("./Assets/training_data/image_" + gerb + ".png");
+            ScreenCapture.CaptureScreenshot("./Assets/training_data/image_" + gerb + "-" + run + ".png");
         }
     }
 

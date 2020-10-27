@@ -13,7 +13,7 @@ function iterateDirectory(path) {
                 console.log(file);
                 base = file.split(".");
                 console.log(base[0] + ".png");
-                readBoundingBoxes(path + file, path + base[0] + ".jpeg")
+                readBoundingBoxes(path + file, path + base[0] + ".png")
             }
         });
     });
@@ -38,6 +38,8 @@ function readBoundingBoxes(text_path, image_path) {
 function drawBoundingBox(image_path, xc, yc, nw, nh) {
     return new Promise((resolve, reject) => {
         size(image_path, function (err, dim) {
+            console.log("dim");
+            console.log(dim);
             width = nw * dim.width;
             height = nh * dim.height;
             tlx = xc * dim.width - width / 2;
@@ -55,9 +57,9 @@ function drawBoundingBox(image_path, xc, yc, nw, nh) {
             console.log("--------------");
 
             gm(image_path)
-                .stroke("#ffffff")
+                .stroke("red")
                 .fill("rgba( 255, 255, 255 , 0 )")
-                .drawRectangle(3, 156, 228, 253)
+                .drawRectangle(tlx, tly, brx, bry)
                 .write(image_path, function (err) {
                     console.log(err)
                     if (!err) console.log('done');

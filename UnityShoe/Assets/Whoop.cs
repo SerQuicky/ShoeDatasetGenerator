@@ -55,6 +55,7 @@ public class Whoop : MonoBehaviour
 
 
         int baseIndex = Random.Range(0, 5);
+        //int baseIndex = 4;
 
         for (int x = 0; x < shoeMatrix; x++)
         {
@@ -81,7 +82,7 @@ public class Whoop : MonoBehaviour
     {
         List<BoundingBox> boundingBoxes = new List<BoundingBox>();
 
-        if (gerb < 50)
+        if (gerb < 2500)
         {
             shoes.ForEach(shoe =>
             {
@@ -92,9 +93,9 @@ public class Whoop : MonoBehaviour
                 Vector3 tl = new Vector3(shoe.gameObject.transform.position.x - (collider.height * shoe.gameObject.transform.localScale.y / 2) + collider.center.x, shoe.gameObject.transform.position.y + (collider.radius * shoe.gameObject.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * shoe.gameObject.transform.localScale.y), shoe.gameObject.transform.position.z) + ResolveShoePivot(shoe.type + "_tl");
                 Vector3 br = new Vector3(shoe.gameObject.transform.position.x + (collider.height * shoe.gameObject.transform.localScale.y / 2) + collider.center.x, shoe.gameObject.transform.position.y - (collider.radius * shoe.gameObject.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * shoe.gameObject.transform.localScale.y), shoe.gameObject.transform.position.z) + ResolveShoePivot(shoe.type + "_br");
 
+
                 // 3d coords to 2d pixels
                 Vector3 centerShoe = cam.WorldToScreenPoint((tl + br) / 2);
-                Debug.Log(centerShoe);
                 Vector3 tl_cord = cam.WorldToScreenPoint(tl);
                 Vector3 br_cord = cam.WorldToScreenPoint(br);
 
@@ -111,7 +112,7 @@ public class Whoop : MonoBehaviour
                 }
             });
 
-            CreateTrainData(boundingBoxes);
+            //CreateTrainData(boundingBoxes);
         }
         gerb++;
 
@@ -119,10 +120,59 @@ public class Whoop : MonoBehaviour
         {
             CapsuleCollider collider = test.transform.GetComponent<CapsuleCollider>();
             // top left and bottom right corner points
-            Vector3 tl = new Vector3(test.transform.position.x - (collider.height * test.transform.localScale.y / 2) + collider.center.x, test.transform.position.y + (collider.radius * test.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * test.transform.localScale.y), test.transform.position.z) + ResolveShoePivot("business_tl");
-            Vector3 br = new Vector3(test.transform.position.x + (collider.height * test.transform.localScale.y / 2) + collider.center.x, test.transform.position.y - (collider.radius * test.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * test.transform.localScale.y), test.transform.position.z) + ResolveShoePivot("business_br");
+            Vector3 tl = new Vector3(test.transform.position.x - (collider.height * test.transform.localScale.x / 2) + collider.center.x, test.transform.position.y + (collider.radius * test.transform.localScale.y / 2) + Mathf.Abs(collider.center.y * test.transform.localScale.y), test.transform.position.z) + ResolveShoePivot("business_tl");
+            Vector3 br = new Vector3(test.transform.position.x + (collider.height * test.transform.localScale.x / 2) + collider.center.x, test.transform.position.y - (collider.radius * test.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * test.transform.localScale.y), test.transform.position.z) + ResolveShoePivot("business_br");
 
-            Debug.Log(collider.transform.position);
+
+            // top left corner
+            /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+            // Business
+            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * 4), test.transform.position.z) + ResolveShoePivot("");
+            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y, test.transform.position.z - (collider.radius * 4)) + ResolveShoePivot("");
+
+            // Converse
+            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 1.5f), test.transform.position.z) + ResolveShoePivot("");
+            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y, test.transform.position.z - (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
+
+
+            // Superstar
+            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 1.75f), test.transform.position.z + (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
+            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 0.5f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 0.5f)) + ResolveShoePivot("");
+
+            // Vans
+            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 1.75f), test.transform.position.z + (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
+            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 1.75f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
+
+            // Soccer
+            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 2f), test.transform.position.z + (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
+            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 1.0f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
+
+            // bottom right corner
+            /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+            // Business
+            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * 5f), test.transform.position.z) + ResolveShoePivot("");
+            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * 1f), test.transform.position.z - (collider.radius * 4)) + ResolveShoePivot("");
+
+            // Converse
+            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 2.15f), test.transform.position.z) + ResolveShoePivot("");
+            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 1f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
+
+
+            // Superstar
+            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 1.75f), test.transform.position.z + (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
+            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 0.5f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 0.5f)) + ResolveShoePivot("");
+
+            // Vans
+            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 1.25f), test.transform.position.z + (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
+            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 2.25f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
+
+            // Soccer
+            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 2f), test.transform.position.z + (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
+            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 1.0f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
+
+
             Debug.Log(tl);
             Debug.Log(br);
 
@@ -181,7 +231,7 @@ public class Whoop : MonoBehaviour
             case "business_tl":
                 return new Vector3(-5f, 20f, 0);
             case "business_br":
-                return new Vector3(-10f, 7.5f, 0);
+                return new Vector3(0f, 7.5f, 0);
             default:
                 return new Vector3(0, 0, 0);
         }

@@ -29,6 +29,9 @@ public class Whoop : MonoBehaviour
 
     public Transform test;
 
+    public GameObject testShoe;
+    private Business fullShoe;
+
     public bool debug = true;
     public bool mix = false;
 
@@ -45,6 +48,7 @@ public class Whoop : MonoBehaviour
                                     new Shoe("converse", Resources.Load<GameObject>("Shoes/converse")), new Shoe("superstar", Resources.Load<GameObject>("Shoes/superstar")),
                                     new Shoe("business", Resources.Load<GameObject>("Shoes/business"))};
 
+        fullShoe = new Business("business", testShoe);
 
         if (shoeMatrix > 5)
         {
@@ -65,10 +69,10 @@ public class Whoop : MonoBehaviour
             float xc = topLeftCoord.x + (Mathf.Abs(bottomRightCoord.x - topLeftCoord.x) / 5) * Random.Range(0, 5);
             float yc = topLeftCoord.y - (Mathf.Abs(bottomRightCoord.y - topLeftCoord.y) / 5) * Random.Range(0, 5);
             float zc = topLeftCoord.z - (Mathf.Abs(bottomRightCoord.z - topLeftCoord.z) / 5) * Random.Range(0, 5);
-            Quaternion randomQuat = ResolveShoeQuaternion(sources[randomIndex].type); //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
+            Quaternion randomQuat = ResolveShoeQuaternion(sources[randomIndex].name); //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
 
             GameObject gameobject = Instantiate<GameObject>(sources[randomIndex].gameObject, new Vector3(xc, yc, zc), randomQuat);
-            shoes.Add(new Shoe(sources[randomIndex].type, gameobject));
+            shoes.Add(new Shoe(sources[randomIndex].name, gameobject));
         }
     }
 
@@ -90,8 +94,8 @@ public class Whoop : MonoBehaviour
                 CapsuleCollider collider = shoe.gameObject.transform.GetComponent<CapsuleCollider>();
 
                 // top left and bottom right corner points
-                Vector3 tl = new Vector3(shoe.gameObject.transform.position.x - (collider.height * shoe.gameObject.transform.localScale.y / 2) + collider.center.x, shoe.gameObject.transform.position.y + (collider.radius * shoe.gameObject.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * shoe.gameObject.transform.localScale.y), shoe.gameObject.transform.position.z) + ResolveShoePivot(shoe.type + "_tl");
-                Vector3 br = new Vector3(shoe.gameObject.transform.position.x + (collider.height * shoe.gameObject.transform.localScale.y / 2) + collider.center.x, shoe.gameObject.transform.position.y - (collider.radius * shoe.gameObject.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * shoe.gameObject.transform.localScale.y), shoe.gameObject.transform.position.z) + ResolveShoePivot(shoe.type + "_br");
+                Vector3 tl = new Vector3(shoe.gameObject.transform.position.x - (collider.height * shoe.gameObject.transform.localScale.y / 2) + collider.center.x, shoe.gameObject.transform.position.y + (collider.radius * shoe.gameObject.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * shoe.gameObject.transform.localScale.y), shoe.gameObject.transform.position.z) + ResolveShoePivot(shoe.name + "_tl");
+                Vector3 br = new Vector3(shoe.gameObject.transform.position.x + (collider.height * shoe.gameObject.transform.localScale.y / 2) + collider.center.x, shoe.gameObject.transform.position.y - (collider.radius * shoe.gameObject.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * shoe.gameObject.transform.localScale.y), shoe.gameObject.transform.position.z) + ResolveShoePivot(shoe.name + "_br");
 
 
                 // 3d coords to 2d pixels
@@ -119,65 +123,12 @@ public class Whoop : MonoBehaviour
         if (debug)
         {
             CapsuleCollider collider = test.transform.GetComponent<CapsuleCollider>();
+
             // top left and bottom right corner points
-            Vector3 tl = new Vector3(test.transform.position.x - (collider.height * test.transform.localScale.x / 2) + collider.center.x, test.transform.position.y + (collider.radius * test.transform.localScale.y / 2) + Mathf.Abs(collider.center.y * test.transform.localScale.y), test.transform.position.z) + ResolveShoePivot("business_tl");
-            Vector3 br = new Vector3(test.transform.position.x + (collider.height * test.transform.localScale.x / 2) + collider.center.x, test.transform.position.y - (collider.radius * test.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * test.transform.localScale.y), test.transform.position.z) + ResolveShoePivot("business_br");
+            System.Tuple<Vector3, Vector3> temp = fullShoe.GetFrontCoords(collider);
 
-
-            // top left corner
-            /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-
-            // Business
-            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * 4), test.transform.position.z) + ResolveShoePivot("");
-            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y, test.transform.position.z - (collider.radius * 4)) + ResolveShoePivot("");
-
-            // Converse
-            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 1.5f), test.transform.position.z) + ResolveShoePivot("");
-            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y, test.transform.position.z - (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
-
-
-            // Superstar
-            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 1.75f), test.transform.position.z + (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
-            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 0.5f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 0.5f)) + ResolveShoePivot("");
-
-            // Vans
-            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 1.75f), test.transform.position.z + (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
-            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 1.75f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
-
-            // Soccer
-            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 2f), test.transform.position.z + (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
-            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 1.0f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
-
-            // bottom right corner
-            /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-
-            // Business
-            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * 5f), test.transform.position.z) + ResolveShoePivot("");
-            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * 1f), test.transform.position.z - (collider.radius * 4)) + ResolveShoePivot("");
-
-            // Converse
-            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 2.15f), test.transform.position.z) + ResolveShoePivot("");
-            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 1f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
-
-
-            // Superstar
-            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 1.75f), test.transform.position.z + (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
-            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 0.5f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 0.5f)) + ResolveShoePivot("");
-
-            // Vans
-            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 1.25f), test.transform.position.z + (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
-            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 2.25f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
-
-            // Soccer
-            //Vector3 tl = new Vector3(test.transform.position.x, test.transform.position.y + (collider.radius * test.transform.localScale.y * 2f), test.transform.position.z + (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
-            //Vector3 br = new Vector3(test.transform.position.x, test.transform.position.y - (collider.radius * test.transform.localScale.y * 1.0f), test.transform.position.z - (collider.radius * test.transform.localScale.y * 1.25f)) + ResolveShoePivot("");
-
-
-            Debug.Log(tl);
-            Debug.Log(br);
-
-
-            Debug.DrawLine(tl, br, Color.red);
+            //Debug.DrawLine(tl, br, Color.red);
+            Debug.DrawLine(temp.Item1, temp.Item2, Color.red);
         }
     }
 
@@ -256,53 +207,19 @@ public class Whoop : MonoBehaviour
         }
     }
 
-    float ResolveYRotationPivot(string shoe)
-    {
-        switch (shoe)
-        {
-            case "vans":
-                return 1;
-            case "soccer":
-                return 1;
-            case "superstar":
-                return 100 / 100;
-            default:
-                return 1;
-        }
-    }
 
 
-    string ResolveShoe(int index)
-    {
-        switch(index)
-        {
-            case 0:
-                return "vans";
-            case 1:
-                return "soccer";
-            case 2:
-                return "superstar";
-            case 3:
-                return "converse";
-            case 4:
-                return "business";
-            default:
-                return "vans";
-        }
-    }
-
-
-    public class Shoe
+    /*public class Shoe
     {
         public string type;
         public GameObject gameObject;
 
         public Shoe(string type, GameObject gameObject)
         {
-            this.type = type;
+            this.name = type;
             this.gameObject = gameObject;
         }
-    }
+    }*/
 
 
 

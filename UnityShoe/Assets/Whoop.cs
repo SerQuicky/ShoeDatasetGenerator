@@ -35,7 +35,7 @@ public class Whoop : MonoBehaviour
     public bool debug = true;
     public bool mix = false;
 
-    private List<Shoe> shoes = new List<Shoe>();
+    private List<IShoeInterface> shoes = new List<IShoeInterface>();
 
     // Start is called before the first frame update
     void Start()
@@ -44,9 +44,9 @@ public class Whoop : MonoBehaviour
         screenHeight = Screen.height;
         backgroundImage.sprite = Resources.Load<Sprite>("Sprites/background" + backgroundIndex);
         light.color = lightColor;
-        Shoe[] sources = { new Shoe("vans", Resources.Load<GameObject>("Shoes/vans")), new Shoe("soccer", Resources.Load<GameObject>("Shoes/soccer")),
-                                    new Shoe("converse", Resources.Load<GameObject>("Shoes/converse")), new Shoe("superstar", Resources.Load<GameObject>("Shoes/superstar")),
-                                    new Shoe("business", Resources.Load<GameObject>("Shoes/business"))};
+        IShoeInterface[] sources = { new Vans("vans", Resources.Load<GameObject>("Shoes/vans")), new Soccer("soccer", Resources.Load<GameObject>("Shoes/soccer")),
+                                    new Converse("converse", Resources.Load<GameObject>("Shoes/converse")), new Superstar("superstar", Resources.Load<GameObject>("Shoes/superstar")),
+                                    new Business("business", Resources.Load<GameObject>("Shoes/business"))};
 
         fullShoe = new Business("business", testShoe);
 
@@ -58,8 +58,8 @@ public class Whoop : MonoBehaviour
 
 
 
-        int baseIndex = Random.Range(0, 5);
-        //int baseIndex = 4;
+        //int baseIndex = Random.Range(0, 5);
+        int baseIndex = 3;
 
         for (int x = 0; x < shoeMatrix; x++)
         {
@@ -69,20 +69,15 @@ public class Whoop : MonoBehaviour
             float xc = topLeftCoord.x + (Mathf.Abs(bottomRightCoord.x - topLeftCoord.x) / 5) * Random.Range(0, 5);
             float yc = topLeftCoord.y - (Mathf.Abs(bottomRightCoord.y - topLeftCoord.y) / 5) * Random.Range(0, 5);
             float zc = topLeftCoord.z - (Mathf.Abs(bottomRightCoord.z - topLeftCoord.z) / 5) * Random.Range(0, 5);
-            Quaternion randomQuat = ResolveShoeQuaternion(sources[randomIndex].name); //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
+            Quaternion randomQuat = ResolveShoeQuaternion(sources[randomIndex].Name); //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
 
-            GameObject gameobject = Instantiate<GameObject>(sources[randomIndex].gameObject, new Vector3(xc, yc, zc), randomQuat);
-            shoes.Add(new Shoe(sources[randomIndex].name, gameobject));
+            GameObject gameobject = Instantiate<GameObject>(sources[randomIndex].ShoeType, new Vector3(xc, yc, zc), randomQuat);
+            shoes.Add(indexToShoe(randomIndex, sources[randomIndex].Name, gameobject));
         }
     }
 
     // Update is called once per frame
     void Update()
-    {
-        Normal();
-    }
-
-    void Normal()
     {
         List<BoundingBox> boundingBoxes = new List<BoundingBox>();
 
@@ -91,11 +86,17 @@ public class Whoop : MonoBehaviour
             shoes.ForEach(shoe =>
             {
                 // collider of the shoe
-                CapsuleCollider collider = shoe.gameObject.transform.GetComponent<CapsuleCollider>();
+                CapsuleCollider collider = shoe.ShoeType.transform.GetComponent<CapsuleCollider>();
+
+                System.Tuple<Vector3, Vector3> tuple = shoe.GetFrontCoords(collider);
+
+                Debug.Log(shoe.Name);
+                //Debug.Log(tuple);
+
 
                 // top left and bottom right corner points
-                Vector3 tl = new Vector3(shoe.gameObject.transform.position.x - (collider.height * shoe.gameObject.transform.localScale.y / 2) + collider.center.x, shoe.gameObject.transform.position.y + (collider.radius * shoe.gameObject.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * shoe.gameObject.transform.localScale.y), shoe.gameObject.transform.position.z) + ResolveShoePivot(shoe.name + "_tl");
-                Vector3 br = new Vector3(shoe.gameObject.transform.position.x + (collider.height * shoe.gameObject.transform.localScale.y / 2) + collider.center.x, shoe.gameObject.transform.position.y - (collider.radius * shoe.gameObject.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * shoe.gameObject.transform.localScale.y), shoe.gameObject.transform.position.z) + ResolveShoePivot(shoe.name + "_br");
+                Vector3 tl = new Vector3(shoe.ShoeType.transform.position.x - (collider.height * shoe.ShoeType.transform.localScale.y / 2) + collider.center.x, shoe.ShoeType.transform.position.y + (collider.radius * shoe.ShoeType.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * shoe.ShoeType.transform.localScale.y), shoe.ShoeType.transform.position.z) + ResolveShoePivot(shoe.Name + "_tl");
+                Vector3 br = new Vector3(shoe.ShoeType.transform.position.x + (collider.height * shoe.ShoeType.transform.localScale.y / 2) + collider.center.x, shoe.ShoeType.transform.position.y - (collider.radius * shoe.ShoeType.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * shoe.ShoeType.transform.localScale.y), shoe.ShoeType.transform.position.z) + ResolveShoePivot(shoe.Name + "_br");
 
 
                 // 3d coords to 2d pixels
@@ -110,9 +111,10 @@ public class Whoop : MonoBehaviour
                 // append bounding box
                 boundingBoxes.Add(new BoundingBox(0, new Vector3(centerShoe.x, screenHeight - centerShoe.y, 0f), width, height));
 
-                if(debug)
+                if (debug)
                 {
-                    Debug.DrawLine(tl, br, Color.red);
+                    //Debug.DrawLine(tl, br, Color.red);
+                    Debug.DrawLine(tuple.Item1, tuple.Item2, Color.red);
                 }
             });
 
@@ -122,23 +124,16 @@ public class Whoop : MonoBehaviour
 
         if (debug)
         {
-            CapsuleCollider collider = test.transform.GetComponent<CapsuleCollider>();
+            //CapsuleCollider collider = test.transform.GetComponent<CapsuleCollider>();
 
             // top left and bottom right corner points
-            System.Tuple<Vector3, Vector3> temp = fullShoe.GetFrontCoords(collider);
+            //System.Tuple<Vector3, Vector3> temp = fullShoe.GetFrontCoords(collider);
 
             //Debug.DrawLine(tl, br, Color.red);
-            Debug.DrawLine(temp.Item1, temp.Item2, Color.red);
+            //Debug.DrawLine(temp.Item1, temp.Item2, Color.red);
         }
     }
 
-
-    void Test()
-    {
-        Vector3 centerShoe = cam.WorldToScreenPoint(test.position);
-        Debug.Log(centerShoe);
-        ScreenCapture.CaptureScreenshot("image_test.png");
-    }
 
     void CreateTrainData(List<BoundingBox> boundingBoxes)
     {
@@ -209,17 +204,24 @@ public class Whoop : MonoBehaviour
 
 
 
-    /*public class Shoe
+    public IShoeInterface indexToShoe(int index, string name, GameObject gameObject)
     {
-        public string type;
-        public GameObject gameObject;
-
-        public Shoe(string type, GameObject gameObject)
+        switch (index)
         {
-            this.name = type;
-            this.gameObject = gameObject;
+            case 0:
+                return new Vans(name, gameObject);
+            case 1:
+                return new Converse(name, gameObject);
+            case 2:
+                return new Soccer(name, gameObject);
+            case 3:
+                return new Superstar(name, gameObject);
+            case 4:
+                return new Business(name, gameObject);
+            default:
+                return new Vans(name, gameObject);
         }
-    }*/
+    }
 
 
 

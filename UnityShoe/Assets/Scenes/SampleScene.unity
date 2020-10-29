@@ -337,7 +337,7 @@ MonoBehaviour:
   test: {fileID: 282450359}
   testShoe: {fileID: 282450356}
   debug: 1
-  mix: 1
+  mix: 0
 --- !u!4 &524179864
 Transform:
   m_ObjectHideFlags: 0

@@ -1,49 +1,58 @@
 ﻿using System;
 using UnityEngine;
 
-public class Business: Shoe
+public class Business: IShoeInterface
 {
-    public Business(string name, GameObject gameObject) : base(name, gameObject) { }
 
-    public Tuple<Vector3, Vector3> GetFrontCoords(CapsuleCollider collider)
+    public Business(string name, GameObject gameObject)
     {
-        Vector3 tl = new Vector3(gameObject.transform.position.x - (collider.height * gameObject.transform.localScale.y / 2) + collider.center.x, gameObject.transform.position.y + (collider.radius * gameObject.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * gameObject.transform.localScale.y), gameObject.transform.position.z) + new Vector3(-5f, 20f, 0);
-        Vector3 br = new Vector3(gameObject.transform.position.x + (collider.height * gameObject.transform.localScale.y / 2) + collider.center.x, gameObject.transform.position.y - (collider.radius * gameObject.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * gameObject.transform.localScale.y), gameObject.transform.position.z) + new Vector3(0f, 7.5f, 0);
+        Name = name;
+        ShoeType = gameObject;
+    }
+
+    public string Name { get; set; }
+    public GameObject ShoeType { get; set; }
+
+    Tuple<Vector3, Vector3> IShoeInterface.GetFrontCoords(CapsuleCollider collider)
+    {
+        Debug.Log("testB");
+        Vector3 tl = new Vector3(ShoeType.transform.position.x - (collider.height * ShoeType.transform.localScale.y / 2) + collider.center.x, ShoeType.transform.position.y + (collider.radius * ShoeType.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * ShoeType.transform.localScale.y), ShoeType.transform.position.z) + new Vector3(-5f, 20f, 0);
+        Vector3 br = new Vector3(ShoeType.transform.position.x + (collider.height * ShoeType.transform.localScale.y / 2) + collider.center.x, ShoeType.transform.position.y - (collider.radius * ShoeType.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * ShoeType.transform.localScale.y), ShoeType.transform.position.z) + new Vector3(0f, 7.5f, 0);
         return new Tuple<Vector3, Vector3>(tl, br);
     }
 
-    public Tuple<Vector3, Vector3> GetBackCoords(CapsuleCollider collider)
+    Tuple<Vector3, Vector3> IShoeInterface.GetBackCoords(CapsuleCollider collider)
     {
         return new Tuple<Vector3, Vector3>(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
     }
 
-    public Tuple<Vector3, Vector3> GetTopCoords(CapsuleCollider collider)
+    Tuple<Vector3, Vector3> IShoeInterface.GetTopCoords(CapsuleCollider collider)
     {
         return new Tuple<Vector3, Vector3>(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
     }
 
-    public Tuple<Vector3, Vector3> GetDownCoords(CapsuleCollider collider)
+    Tuple<Vector3, Vector3> IShoeInterface.GetDownCoords(CapsuleCollider collider)
     {
         return new Tuple<Vector3, Vector3>(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
     }
 
 
-    public Tuple<Vector3, Vector3> GetTopLeftCoords(CapsuleCollider collider)
+    Tuple<Vector3, Vector3> IShoeInterface.GetTopLeftCoords(CapsuleCollider collider)
     {
-        Vector3 tl = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + (collider.radius * 4), gameObject.transform.position.z);
-        Vector3 br = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z - (collider.radius * 4));
+        Vector3 tl = new Vector3(ShoeType.transform.position.x, ShoeType.transform.position.y + (collider.radius * 4), ShoeType.transform.position.z);
+        Vector3 br = new Vector3(ShoeType.transform.position.x, ShoeType.transform.position.y, ShoeType.transform.position.z - (collider.radius * 4));
         return new Tuple<Vector3, Vector3>(tl, br);
     }
 
-    public Tuple<Vector3, Vector3> GetTopRightCoords(CapsuleCollider collider)
+    Tuple<Vector3, Vector3> IShoeInterface.GetTopRightCoords(CapsuleCollider collider)
     {
-        Vector3 tl = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + (collider.radius * 5f), gameObject.transform.position.z);
-        Vector3 br = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y - (collider.radius * 1f), gameObject.transform.position.z - (collider.radius * 4));
+        Vector3 tl = new Vector3(ShoeType.transform.position.x, ShoeType.transform.position.y + (collider.radius * 5f), ShoeType.transform.position.z);
+        Vector3 br = new Vector3(ShoeType.transform.position.x, ShoeType.transform.position.y - (collider.radius * 1f), ShoeType.transform.position.z - (collider.radius * 4));
         return new Tuple<Vector3, Vector3>(tl, br);
     }
 
-    public Quaternion ResolveShoeQuaternion()
+    Quaternion IShoeInterface.ResolveShoeQuaternion()
     {
-        return Quaternion.Euler(0f, 90f, 0f);
+        return Quaternion.Euler(270f, 90f, 0f);
     }
 }

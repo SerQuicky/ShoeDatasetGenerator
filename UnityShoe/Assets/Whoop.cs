@@ -12,14 +12,12 @@ public class Whoop : MonoBehaviour
 
     public int backgroundIndex = 1;
     public Image backgroundImage;
+    public GameObject background;
     public Camera cam;
 
     public int shoeMatrix = 1;
 
     public int run = 1;
-
-    public Vector3 topLeftCoord;
-    public Vector3 bottomRightCoord;
 
     private float screenWidth;
     private float screenHeight;
@@ -35,7 +33,22 @@ public class Whoop : MonoBehaviour
     public bool debug = true;
     public bool mix = false;
 
+
+
+    private int uff = 1;
+    private List<IShoeInterface> sources;
+
+
     private List<IShoeInterface> shoes = new List<IShoeInterface>();
+    List<int> test2 = new List<int>() { 3, 4, 5 };
+
+    private List<CameraSettings> settings = new List<CameraSettings>()
+    {
+        new CameraSettings(new Vector3(-0.7f,7f,-783.4f), Quaternion.identity, new Vector3(-2.29f, 13.71f, 75f), Quaternion.identity, new Vector3(-265, 150, 10), new Vector3(293, 108, -200)),
+        new CameraSettings(new Vector3(-768, 621, 134), Quaternion.Euler(50f, 90f, 0f), new Vector3(-112f, -58f, 75f), Quaternion.Euler(70f, 90f, 0f), new Vector3(-260, 133, 200), new Vector3(-210, 133, -140)),
+        new CameraSettings(new Vector3(0,0,0), Quaternion.Euler(706.9f, 322.4f, -11.8f), new Vector3(-2.29f, 13.71f, 75f), Quaternion.identity, new Vector3(-265, 150, 10), new Vector3(293, 108, -200))
+    };
+
 
     // Start is called before the first frame update
     void Start()
@@ -44,9 +57,14 @@ public class Whoop : MonoBehaviour
         screenHeight = Screen.height;
         backgroundImage.sprite = Resources.Load<Sprite>("Sprites/background" + backgroundIndex);
         light.color = lightColor;
-        IShoeInterface[] sources = { new Vans("vans", Resources.Load<GameObject>("Shoes/vans")), new Soccer("soccer", Resources.Load<GameObject>("Shoes/soccer")),
-                                    new Converse("converse", Resources.Load<GameObject>("Shoes/converse")), new Superstar("superstar", Resources.Load<GameObject>("Shoes/superstar")),
-                                    new Business("business", Resources.Load<GameObject>("Shoes/business"))};
+        sources = new List<IShoeInterface>()
+        {
+            new Vans("vans", Resources.Load<GameObject>("Shoes/vans")),
+            new Soccer("soccer", Resources.Load<GameObject>("Shoes/soccer")),
+            new Converse("converse", Resources.Load<GameObject>("Shoes/converse")),
+            new Superstar("superstar", Resources.Load<GameObject>("Shoes/superstar")),
+            new Business("business", Resources.Load<GameObject>("Shoes/business"))
+        };
 
         fullShoe = new Business("business", testShoe);
 
@@ -55,23 +73,33 @@ public class Whoop : MonoBehaviour
             shoeMatrix = 5;
         }
 
+        initScene();
+    }
 
 
+    void initScene()
+    {
+        cam.transform.position = settings[uff].position;
+        cam.transform.rotation = settings[uff].angle;
+        background.transform.position = settings[uff].backgroundPosition;
+        background.transform.rotation = settings[uff].backgroundAngle;
 
         //int baseIndex = Random.Range(0, 5);
-        int baseIndex = 3;
+        // TODO: Check x y z in shoes for front........
+        int baseIndex = 4;
 
         for (int x = 0; x < shoeMatrix; x++)
         {
 
             int randomIndex = mix ? Random.Range(0, 5) : baseIndex;
-            //double rDouble = r.NextDouble() * range; //for doubles
-            float xc = topLeftCoord.x + (Mathf.Abs(bottomRightCoord.x - topLeftCoord.x) / 5) * Random.Range(0, 5);
-            float yc = topLeftCoord.y - (Mathf.Abs(bottomRightCoord.y - topLeftCoord.y) / 5) * Random.Range(0, 5);
-            float zc = topLeftCoord.z - (Mathf.Abs(bottomRightCoord.z - topLeftCoord.z) / 5) * Random.Range(0, 5);
-            Quaternion randomQuat = ResolveShoeQuaternion(sources[randomIndex].Name); //Quaternion.Euler(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
+            float xc = settings[uff].layerPositionTL.x + (Mathf.Abs(settings[uff].layerPositionBR.x - settings[uff].layerPositionTL.x) / 5) * Random.Range(0, 5);
+            float yc = settings[uff].layerPositionTL.y - (Mathf.Abs(settings[uff].layerPositionBR.y - settings[uff].layerPositionTL.y) / 5) * Random.Range(0, 5);
+            float zc = settings[uff].layerPositionTL.z - (Mathf.Abs(settings[uff].layerPositionBR.z - settings[uff].layerPositionTL.z) / 5) * Random.Range(0, 5);
 
-            GameObject gameobject = Instantiate<GameObject>(sources[randomIndex].ShoeType, new Vector3(xc, yc, zc), randomQuat);
+            Debug.Log(new Vector3(xc, yc, zc));
+
+
+            GameObject gameobject = Instantiate<GameObject>(sources[randomIndex].ShoeType, new Vector3(xc, yc, zc), sources[randomIndex].ResolveShoeQuaternion());
             shoes.Add(indexToShoe(randomIndex, sources[randomIndex].Name, gameobject));
         }
     }
@@ -87,22 +115,12 @@ public class Whoop : MonoBehaviour
             {
                 // collider of the shoe
                 CapsuleCollider collider = shoe.ShoeType.transform.GetComponent<CapsuleCollider>();
-
-                System.Tuple<Vector3, Vector3> tuple = shoe.GetFrontCoords(collider);
-
-                Debug.Log(shoe.Name);
-                //Debug.Log(tuple);
-
-
-                // top left and bottom right corner points
-                Vector3 tl = new Vector3(shoe.ShoeType.transform.position.x - (collider.height * shoe.ShoeType.transform.localScale.y / 2) + collider.center.x, shoe.ShoeType.transform.position.y + (collider.radius * shoe.ShoeType.transform.localScale.x / 2) + Mathf.Abs(collider.center.y * shoe.ShoeType.transform.localScale.y), shoe.ShoeType.transform.position.z) + ResolveShoePivot(shoe.Name + "_tl");
-                Vector3 br = new Vector3(shoe.ShoeType.transform.position.x + (collider.height * shoe.ShoeType.transform.localScale.y / 2) + collider.center.x, shoe.ShoeType.transform.position.y - (collider.radius * shoe.ShoeType.transform.localScale.y / 2) - Mathf.Abs(collider.center.y * shoe.ShoeType.transform.localScale.y), shoe.ShoeType.transform.position.z) + ResolveShoePivot(shoe.Name + "_br");
-
+                System.Tuple<Vector3, Vector3> tuple = shoe.GetTopLeftCoords(collider);
 
                 // 3d coords to 2d pixels
-                Vector3 centerShoe = cam.WorldToScreenPoint((tl + br) / 2);
-                Vector3 tl_cord = cam.WorldToScreenPoint(tl);
-                Vector3 br_cord = cam.WorldToScreenPoint(br);
+                Vector3 centerShoe = cam.WorldToScreenPoint((tuple.Item1 + tuple.Item2) / 2);
+                Vector3 tl_cord = cam.WorldToScreenPoint(tuple.Item1);
+                Vector3 br_cord = cam.WorldToScreenPoint(tuple.Item2);
 
                 // absolute width and height of the box (top-left to bottom-right cornerpoint)
                 float width = Mathf.Abs(tl_cord.x - br_cord.x);
@@ -153,57 +171,6 @@ public class Whoop : MonoBehaviour
     }
 
 
-    // resolve inaccurate 
-    Vector3 ResolveShoePivot(string shoe)
-    {
-        switch (shoe)
-        {
-            case "vans_tl":
-                return new Vector3(0, 0, 0);
-            case "vans_br":
-                return new Vector3(5f, -5, 0);
-            case "soccer_tl":
-                return new Vector3(0, 8f, 0);
-            case "soccer_br":
-                return new Vector3(0, 8f, 0);
-            case "superstar_tl":
-                return new Vector3(80f, 15f, 0);
-            case "superstar_br":
-                return new Vector3(80f, 15f, 0);
-            case "converse_tl":
-                return new Vector3(0, 15f, 0);
-            case "converse_br":
-                return new Vector3(0, 15f, 0);
-            case "business_tl":
-                return new Vector3(-5f, 20f, 0);
-            case "business_br":
-                return new Vector3(0f, 7.5f, 0);
-            default:
-                return new Vector3(0, 0, 0);
-        }
-    }
-
-    Quaternion ResolveShoeQuaternion(string shoe)
-    {
-        switch (shoe)
-        {
-            case "vans":
-                return Quaternion.identity;
-            case "soccer":
-                return Quaternion.identity;
-            case "superstar":
-                return Quaternion.Euler(0f, 90f, 0f);
-            case "converse":
-                return Quaternion.Euler(0f, 90f, 0f);
-            case "business":
-                return Quaternion.Euler(270f, 90f, 0f);
-            default:
-                return Quaternion.identity;
-        }
-    }
-
-
-
     public IShoeInterface indexToShoe(int index, string name, GameObject gameObject)
     {
         switch (index)
@@ -211,9 +178,9 @@ public class Whoop : MonoBehaviour
             case 0:
                 return new Vans(name, gameObject);
             case 1:
-                return new Converse(name, gameObject);
-            case 2:
                 return new Soccer(name, gameObject);
+            case 2:
+                return new Converse(name, gameObject);
             case 3:
                 return new Superstar(name, gameObject);
             case 4:
@@ -239,6 +206,27 @@ public class Whoop : MonoBehaviour
             this.center = center;
             this.width = width;
             this.height = height;
+        }
+    }
+
+    public class CameraSettings
+    {
+        public Vector3 position;
+        public Quaternion angle;
+        public Vector3 backgroundPosition;
+        public Quaternion backgroundAngle;
+        public Vector3 layerPositionTL;
+        public Vector3 layerPositionBR;
+
+
+        public CameraSettings(Vector3 position, Quaternion angle, Vector3 backgroundPosition, Quaternion backgroundAngle, Vector3 layerPositionTL, Vector3 layerPositionBR)
+        {
+            this.position = position;
+            this.angle = angle;
+            this.backgroundPosition = backgroundPosition;
+            this.backgroundAngle = backgroundAngle;
+            this.layerPositionTL = layerPositionTL;
+            this.layerPositionBR = layerPositionBR;
         }
     }
 }

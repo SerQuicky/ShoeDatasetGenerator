@@ -27,7 +27,9 @@ public class Converse : IShoeInterface
 
     Tuple<Vector3, Vector3> IShoeInterface.GetTopCoords(CapsuleCollider collider)
     {
-        return new Tuple<Vector3, Vector3>(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+        Vector3 tl = new Vector3(ShoeType.transform.position.x + (collider.radius * ShoeType.transform.localScale.x * 1.5f), ShoeType.transform.position.y, ShoeType.transform.position.z);
+        Vector3 br = new Vector3(ShoeType.transform.position.x - (collider.radius * ShoeType.transform.localScale.x * 1.5f), ShoeType.transform.position.y, ShoeType.transform.position.z - (collider.radius * ShoeType.transform.localScale.z * 1.25f));
+        return new Tuple<Vector3, Vector3>(tl, br);
     }
 
     Tuple<Vector3, Vector3> IShoeInterface.GetDownCoords(CapsuleCollider collider)

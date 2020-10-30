@@ -35,7 +35,7 @@ public class Whoop : MonoBehaviour
 
 
 
-    private int uff = 3;
+    private int uff = 4;
     private List<IShoeInterface> sources;
 
 
@@ -48,6 +48,7 @@ public class Whoop : MonoBehaviour
         new CameraSettings(new Vector3(-768, 621, 134), Quaternion.Euler(50f, 90f, 0f), new Vector3(-112f, -58f, 75f), Quaternion.Euler(70f, 90f, 0f), new Vector3(-260, 133, 200), new Vector3(-210, 133, -140)),
         new CameraSettings(new Vector3(-768, 621, 134), Quaternion.Euler(50f, -90f, 0f), new Vector3(-1272f, -36f, 234f), Quaternion.Euler(70f, -90f, 0f), new Vector3(-1284, 133, 200.1f), new Vector3(-1220.8f, 133, 65)),
         new CameraSettings(new Vector3(-0.7f,7f,-783.4f), Quaternion.identity, new Vector3(-2.29f, 13.71f, 75f), Quaternion.identity, new Vector3(-265, 150, 10), new Vector3(293, 108, -200)),
+        new CameraSettings(new Vector3(-8,798,117), Quaternion.Euler(90, 0, 0f), new Vector3(-2.29f, 13.71f, 75f), Quaternion.Euler(90, 0, 0f), new Vector3(-149.7f, 208.3f, 190.1f), new Vector3(192.1f, 208.3f, 118.8f)),
     };
 
 
@@ -115,7 +116,7 @@ public class Whoop : MonoBehaviour
             {
                 // collider of the shoe
                 CapsuleCollider collider = shoe.ShoeType.transform.GetComponent<CapsuleCollider>();
-                System.Tuple<Vector3, Vector3> tuple = shoe.GetFrontCoords(collider);
+                System.Tuple<Vector3, Vector3> tuple = shoe.GetTopCoords(collider);
 
                 // 3d coords to 2d pixels
                 Vector3 centerShoe = cam.WorldToScreenPoint((tuple.Item1 + tuple.Item2) / 2);

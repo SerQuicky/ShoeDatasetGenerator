@@ -51,8 +51,8 @@ public class Soccer: IShoeInterface
         return new Tuple<Vector3, Vector3>(tl, br);
     }
 
-    Quaternion IShoeInterface.ResolveShoeQuaternion()
+    Quaternion IShoeInterface.ResolveShoeQuaternion(bool rotate)
     {
-        return Quaternion.identity;
+        return Quaternion.Euler(0f, rotate ? 0 : 180f, 0f);
     }
 }

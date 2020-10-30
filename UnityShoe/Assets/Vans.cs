@@ -44,7 +44,7 @@ public class Vans : IShoeInterface
         return new Tuple<Vector3, Vector3>(tl, br);
     }
 
-    Quaternion IShoeInterface.ResolveShoeQuaternion() {
-       return Quaternion.identity;
+    Quaternion IShoeInterface.ResolveShoeQuaternion(bool rotate) {
+        return Quaternion.Euler(0f, rotate ? 0 : 180f, 0f);
     }
 }

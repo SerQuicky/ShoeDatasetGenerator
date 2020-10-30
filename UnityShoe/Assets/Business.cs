@@ -51,8 +51,8 @@ public class Business: IShoeInterface
         return new Tuple<Vector3, Vector3>(tl, br);
     }
 
-    Quaternion IShoeInterface.ResolveShoeQuaternion()
+    Quaternion IShoeInterface.ResolveShoeQuaternion(bool rotate)
     {
-        return Quaternion.Euler(270f, 90f, 0f);
+        return Quaternion.Euler(270f, rotate ? -90f : 90f, 0f);
     }
 }

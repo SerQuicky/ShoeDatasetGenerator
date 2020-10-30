@@ -39,8 +39,8 @@ public class Vans : IShoeInterface
     }
 
     Tuple<Vector3, Vector3> IShoeInterface.GetTopRightCoords(CapsuleCollider collider) {
-        Vector3 tl = new Vector3(ShoeType.transform.position.x, ShoeType.transform.position.y + (collider.radius * ShoeType.transform.localScale.y * 1.25f), ShoeType.transform.position.z + (collider.radius * ShoeType.transform.localScale.y * 1.25f));
-        Vector3 br = new Vector3(ShoeType.transform.position.x, ShoeType.transform.position.y - (collider.radius * ShoeType.transform.localScale.y * 2.25f), ShoeType.transform.position.z - (collider.radius * ShoeType.transform.localScale.y * 1.25f));
+        Vector3 tl = new Vector3(ShoeType.transform.position.x + (collider.radius * ShoeType.transform.localScale.x * 3f), ShoeType.transform.position.y, ShoeType.transform.position.z + (collider.radius * ShoeType.transform.localScale.z * 1.5f));
+        Vector3 br = new Vector3(ShoeType.transform.position.x - (collider.radius * ShoeType.transform.localScale.x * 3f), ShoeType.transform.position.y, ShoeType.transform.position.z - (collider.radius * ShoeType.transform.localScale.z * 1.5f));
         return new Tuple<Vector3, Vector3>(tl, br);
     }
 

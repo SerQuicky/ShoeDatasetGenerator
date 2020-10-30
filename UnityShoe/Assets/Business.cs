@@ -46,8 +46,8 @@ public class Business: IShoeInterface
 
     Tuple<Vector3, Vector3> IShoeInterface.GetTopRightCoords(CapsuleCollider collider)
     {
-        Vector3 tl = new Vector3(ShoeType.transform.position.x, ShoeType.transform.position.y + (collider.radius * 5f), ShoeType.transform.position.z);
-        Vector3 br = new Vector3(ShoeType.transform.position.x, ShoeType.transform.position.y - (collider.radius * 1f), ShoeType.transform.position.z - (collider.radius * 4));
+        Vector3 tl = new Vector3(ShoeType.transform.position.x + (collider.radius * ShoeType.transform.localScale.x * 2.25f), ShoeType.transform.position.y, ShoeType.transform.position.z + (collider.radius * ShoeType.transform.localScale.z * 0.5f));
+        Vector3 br = new Vector3(ShoeType.transform.position.x - (collider.radius * ShoeType.transform.localScale.x * 4f), ShoeType.transform.position.y, ShoeType.transform.position.z - (collider.radius * ShoeType.transform.localScale.z * 2f));
         return new Tuple<Vector3, Vector3>(tl, br);
     }
 

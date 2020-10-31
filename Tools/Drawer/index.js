@@ -7,30 +7,32 @@ const path = "./examples/"
 iterateDirectory(path);
 
 function iterateDirectory(path) {
-    fs.readdir(path, (err, files) => {
-        files.forEach(file => {
-            if (file.includes(".txt")) {
-                console.log(file);
-                base = file.split(".");
-                console.log(base[0] + ".png");
-                readBoundingBoxes(path + file, path + base[0] + ".png")
+    fs.readdir(path, async (err, files) => {
+        for(let i = 0; i < files.length; i++) {
+            if (files[i].includes(".txt")) {
+                base = files[i].split(".");
+                await readBoundingBoxes(path + files[i], path + base[0] + ".png")
             }
-        });
+        }
     });
 }
 
 
 function readBoundingBoxes(text_path, image_path) {
-    fs.readFile(text_path, 'utf8', async function (err, data) {
-        if (err) throw err;
-        boxes = data.split('\n');
-
-        for (let i = 0; i < 1; i++) {
-            if (boxes[i].length > 10) {
-                coords = boxes[i].split(" ");
-                await drawBoundingBox(image_path, coords[1], coords[2], coords[3], coords[4]);
+    return new Promise((resolve, reject) => { 
+        fs.readFile(text_path, 'utf8', async function (err, data) {
+            if (err) throw err;
+            boxes = data.split('\n');
+    
+            for (let i = 0; i < 2; i++) {
+                if (boxes[i].length > 10) {
+                    coords = boxes[i].split(" ");
+                    await drawBoundingBox(image_path, coords[1], coords[2], coords[3], coords[4]);
+                }
             }
-        }
+
+            resolve();
+        });
     });
 }
 

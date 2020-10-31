@@ -201,12 +201,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 452109302}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &282450359 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8010774578559518003, guid: dff30779c38c94ffcb586065810d0928,
-    type: 3}
-  m_PrefabInstance: {fileID: 452109302}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &452109302
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -222,7 +216,7 @@ PrefabInstance:
     - target: {fileID: 7232831191747223433, guid: dff30779c38c94ffcb586065810d0928,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8010774578559518003, guid: dff30779c38c94ffcb586065810d0928,
         type: 3}
@@ -325,17 +319,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 810bf0acc9f2c4911827878ee65c0ecb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backgroundIndex: 1
   backgroundImage: {fileID: 201501494}
   background: {fileID: 1383694935}
   cam: {fileID: 963194227}
-  shoeMatrix: 2
-  run: 20
   light: {fileID: 705507994}
-  lightColor: {r: 1, g: 1, b: 1, a: 1}
-  test: {fileID: 282450359}
   testShoe: {fileID: 282450356}
-  debug: 1
+  shoeMatrix: 2
+  debug: 0
   mix: 0
 --- !u!4 &524179864
 Transform:

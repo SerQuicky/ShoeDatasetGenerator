@@ -318,10 +318,10 @@ MonoBehaviour:
   cam: {fileID: 963194227}
   light: {fileID: 705507994}
   testShoe: {fileID: 1134771418}
-  shoeMatrix: 2
-  debug: 1
-  mix: 0
-  circle: 1
+  debug: 0
+  speed: 3
+  rotWidth: 10
+  rotHeight: 12
   spawnLayerTL: {x: -131.2, y: 70, z: -200}
   spawnLayerBR: {x: 104.1, y: -47, z: -200}
   positions: []
